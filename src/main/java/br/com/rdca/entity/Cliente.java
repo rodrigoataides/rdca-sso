@@ -1,33 +1,36 @@
 package br.com.rdca.entity;
 
+import java.util.Date;
+
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@Table(name = "Usuario")
 @EqualsAndHashCode(callSuper = true)
-public class Usuario extends PanacheEntityBase {
-
+public class Cliente extends PanacheEntityBase {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @Column
-    private String nomeUsuario;
+    private String nome;
 
     @Column
-    private String senha;
+    private String cpf;
 
-    @OneToOne
-    private Aplicacao aplicacao;
+    @Column
+    private Date dataNascimento;
+    
+    @Column
+    private String email;
+
+    @Column
+    private String telefone;
 
 }

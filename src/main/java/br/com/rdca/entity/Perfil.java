@@ -4,30 +4,27 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 @Entity
 @Data
-@Table(name = "Usuario")
 @EqualsAndHashCode(callSuper = true)
-public class Usuario extends PanacheEntityBase {
+public class Perfil extends PanacheEntityBase {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     @Column
-    private String nomeUsuario;
+    private String nome;
 
     @Column
-    private String senha;
+    private String sigla;
 
-    @OneToOne
+    @ManyToOne
     private Aplicacao aplicacao;
 
 }
