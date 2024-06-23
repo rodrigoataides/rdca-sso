@@ -13,6 +13,7 @@ import br.com.rdca.entity.Usuario;
 import br.com.rdca.repository.UsuarioRepository;
 import br.com.rdca.security.Roles;
 import br.com.rdca.security.TokenService;
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
@@ -22,6 +23,7 @@ import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -37,6 +39,9 @@ public class AuthResource {
 
     @Inject
     UsuarioRepository usuarioRepository;
+
+    @Inject
+    SecurityIdentity identity;
 
     @POST
     @Path("/login")
@@ -59,16 +64,26 @@ public class AuthResource {
         }
     }
 
-    /*@GET
+    @GET
     @Path("/validate")
-    @Consumes(MediaType.CHARSET_PARAMETER)
-    @Produces(MediaType.TEXT_PLAIN)
+    //@Consumes(MediaType.TEXT_PLAIN)
+    @Produces(MediaType.APPLICATION_JSON)
     @RolesAllowed({Roles.USER, Roles.SERVICE})
-    public Response validate(String token) {
-        // Validar o token JWT (o próprio Quarkus cuidará da validação se configurado
-        // corretamente)
-        return Response.ok(token).build();
-    }*/
+    public Response validate(@QueryParam("token") String token) throws JsonProcessingException {
+        Map<String, String> response = new HashMap<>();
+
+        //Carregando o usuário autenticado.
+        String username = identity.getPrincipal().getName();
+        Usuario usuario = usuarioRepository.findByNomeUsuario(username);
+        ObjectMapper om = new ObjectMapper();
+        String jsonUser = om.writeValueAsString(usuario);
+        response.put("user", jsonUser);
+
+        //Buscar mais dados dos usuário, tipo sistema que ele pertence, role e expiracao.
+        //Para buscar preciso que seja criado os dados do sistema e clientes com as permissoes.
+
+        return Response.ok(response).build();
+    }
 
     @POST
     @Path("/logout")
